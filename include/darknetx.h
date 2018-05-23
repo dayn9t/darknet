@@ -2,6 +2,10 @@
 
 #include "cx_api.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 /****************************** Image ******************************/
 
@@ -12,7 +16,7 @@ typedef struct {
 ///加载图像
 cx_status_t dn_image_load(dn_image_t **image, cx_path_t image_file);
 
-///缩放图像
+///缩放图像,保持宽高比，并移动到目标图像中心，其余区域填充0.5
 cx_status_t dn_image_letterbox(dn_image_t **image, dn_image_t *src, cx_size_t size);
 
 ///销毁图像
@@ -96,3 +100,8 @@ cx_status_t dn_detection_box(const dn_detections_t *detection, cx_rectf_t* box);
  * @param props         所有分类对应的概率，数据在detection销毁后失效
  */
 cx_status_t dn_detection_props(const dn_detections_t *detection, cx_floats_t* props);
+
+
+#ifdef __cplusplus
+}
+#endif

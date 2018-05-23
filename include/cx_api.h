@@ -2,6 +2,10 @@
 
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 /****************************** Common ******************************/
 
@@ -91,3 +95,7 @@ void* cx_new_copy(size_t size, const void *src);
 
 ///创建对象值的副本
 #define cx_clone(v) cx_new_copy(sizeof(v), &v)
+
+#ifdef __cplusplus
+}
+#endif
