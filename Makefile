@@ -63,7 +63,9 @@ ifeq ($(GPU), 1)
 LDFLAGS+= -lstdc++ 
 OBJ+=convolutional_kernels.o deconvolutional_kernels.o activation_kernels.o im2col_kernels.o col2im_kernels.o blas_kernels.o crop_layer_kernels.o dropout_layer_kernels.o maxpool_layer_kernels.o avgpool_layer_kernels.o
 endif
-OBJ+=cx_api.o darknetx.o
+CFLAGS+= -Werror-implicit-function-declaration
+OBJ+=darknetx.o
+LDFLAGS+= -lcxtom
 
 EXECOBJ = $(addprefix $(OBJDIR), $(EXECOBJA))
 OBJS = $(addprefix $(OBJDIR), $(OBJ))

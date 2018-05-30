@@ -1,6 +1,6 @@
 #pragma once
 
-#include "cx_api.h"
+#include <cx/tom/type.h>
 
 #ifdef __cplusplus
 extern "C" {

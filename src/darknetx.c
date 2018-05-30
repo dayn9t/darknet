@@ -1,7 +1,7 @@
 
 #include <darknetx.h>
-#include <cx_api.h>
 #include <darknet.h>
+#include <cx/tom/op.h>
 #include <stdlib.h>
 #include <assert.h>
 
@@ -162,7 +162,7 @@ cx_status_t dn_detection_box(const dn_detections_t *_det, cx_rectf_t *_box)
 cx_status_t dn_detection_props(const dn_detections_t *_det, cx_floats_t* props)
 {
     detection *me = (detection *) _det;
-    props->size = me->classes;
-    props->begin = me->prob;
+    cx_buffer_float_t b = { me->classes, me->prob };
+    cx_vec_copy(b, props);
     return cx_ok;
 }
