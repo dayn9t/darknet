@@ -57,7 +57,7 @@ typedef struct {
 
 
 ///对象检测器，派生自Network
-typedef struct {
+typedef struct dn_detector {
     dn_network_t *net;
     float thresh;
     float hier_thresh;
