@@ -102,3 +102,8 @@ results:
 clean:
 	rm -rf $(OBJS) $(SLIB) $(ALIB) $(EXEC) $(EXECOBJ) $(OBJDIR)/*
 
+install:
+	cp include/darknetx.h /usr/local/include
+	cp libdarknet.so /usr/local/lib
+	cp libdarknet.a /usr/local/lib
+	ldconfig
