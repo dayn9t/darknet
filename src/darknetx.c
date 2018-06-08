@@ -87,31 +87,24 @@ cx_status_t dn_network_input_shape(const dn_network_t *net, cx_mat_shape_t *shap
 
 /****************************** Detection ******************************/
 
-cx_status_t dn_detections_clear(dn_detections_t *detections)
+cx_status_t dn_detections_clear(dn_detections_t *dets)
 {
-    free_detections((detection*)detections->begin, detections->size);
-    detections->begin = 0;
-    detections->size = 0;
+    free_detections((detection*)dets->begin, dets->size);
+    dets->begin = 0;
+    dets->size = 0;
     return cx_ok;
 }
 
-
-cx_status_t dn_detection_box(const dn_detection_t *_det, cx_rectf_t *_box)
+cx_status_t dn_detections_at(const dn_detections_t *dets, size_t index, dn_detection_t* elem)
 {
-    detection *me = (detection *) _det;
+    const detection *me = (const detection *) dets->begin + index;
     box b = me->bbox;
-    _box->x = b.x - b.w / 2;
-    _box->y = b.y - b.h / 2;
-    _box->width = b.w;
-    _box->height = b.h;
-    return cx_ok;
-}
 
-cx_status_t dn_detection_props(const dn_detection_t *_det, cx_buffer_float_t* props)
-{
-    detection *me = (detection *) _det;
-    props->size = me->classes;
-    props->data = me->prob;
+    cx_rectf_t box = { b.x - b.w / 2, b.y - b.h / 2, b.w, b.h };
+    cx_buffer_float_t props = { me->classes, me->prob };
+    
+    elem->box = box;
+    elem->props = props;
     return cx_ok;
 }
 
@@ -162,17 +155,22 @@ cx_status_t dn_detector_detect(dn_detector_t* detector, cx_imagef_t* _image, dn_
     network *net = (network *) detector->net;
     double time = what_time_is_it_now();    
     network_predict(net, sized_image.data);
-    printf("Predicted in %f seconds.\n", what_time_is_it_now() - time);
+    double time1 = what_time_is_it_now();
+    printf("Predicted in %f seconds.\n", time1 - time);
 
     int boxes = 0;
     detection *dets = get_network_boxes(net, ori_size.width, ori_size.height, detector->thresh,
                                         detector->hier_thresh, 0, 1, &boxes);
+    double time2 = what_time_is_it_now();
+    printf("Predicted in %f seconds.\n", time2 - time1);
 
     size_t classes;
     dn_network_classes(detector->net, &classes);
 
     float nms = .45;
     do_nms_sort(dets, boxes, classes, nms);
+    double time3 = what_time_is_it_now();
+    printf("Predicted in %f seconds.\n", time3 - time2);
 
     detections->size = boxes;
     detections->begin = (dn_detection_t *) dets;

@@ -27,30 +27,25 @@ cx_status_t dn_network_input_shape(const dn_network_t *net, cx_mat_shape_t *shap
 
 ///检测对象
 typedef struct {
+    cx_rectf_t box;             ///<外接矩形
+    cx_buffer_float_t props;    ///<所有分类对应的概率，数据在detection销毁后失效
 } dn_detection_t;
 
 ///检测对象集
 typedef struct {
-    dn_detection_t *begin;
-    size_t size;
+    void *begin;
+    size_t size;                ///<检测对象数量
 } dn_detections_t;
 
  ///清理检测结果数组元素.
 cx_status_t dn_detections_clear(dn_detections_t *detections);
 
 /**
- * 获取检测结果对象外接矩形.
- * @param detection     检测结果对象
- * @param box           外接矩形
+ * 获取检测结果集合元素.
+ * @param detections    检测结果对象
+ * @param index         元素索引
  */
-cx_status_t dn_detection_box(const dn_detection_t *detection, cx_rectf_t* box);
-
-/**
- * 获取检测结果对象分类概率.
- * @param detection     检测结果对象
- * @param props         所有分类对应的概率，数据在detection销毁后失效
- */
-cx_status_t dn_detection_props(const dn_detection_t *detection, cx_buffer_float_t* props);
+cx_status_t dn_detections_at(const dn_detections_t *detections, size_t index, dn_detection_t* elem);
 
 /****************************** Detector ******************************/
 
