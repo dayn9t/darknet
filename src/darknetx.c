@@ -116,9 +116,10 @@ cx_status_t dn_detector_load(dn_detector_t **detector, cx_path_t cfg_file, cx_pa
     set_batch_network(net, 1);
 
     dn_detector_t *d = calloc(sizeof(dn_detector_t), 1);
+    d->thresh = 0.5;
+    d->hier_thresh = 0.5;
     d->net = (dn_network_t *) net;
     *detector = d;
-
     srand(2222222);
     return cx_ok;
 }
@@ -156,21 +157,20 @@ cx_status_t dn_detector_detect(dn_detector_t* detector, cx_imagef_t* _image, dn_
     double time = what_time_is_it_now();    
     network_predict(net, sized_image.data);
     double time1 = what_time_is_it_now();
-    printf("Predicted in %f seconds.\n", time1 - time);
-
+    //printf("Predicted in %f seconds.\n", time1 - time);
     int boxes = 0;
     detection *dets = get_network_boxes(net, ori_size.width, ori_size.height, detector->thresh,
                                         detector->hier_thresh, 0, 1, &boxes);
     double time2 = what_time_is_it_now();
-    printf("Predicted in %f seconds.\n", time2 - time1);
+    //printf("Predicted in %f seconds.\n", time2 - time1);
 
     size_t classes;
     dn_network_classes(detector->net, &classes);
-
+    //printf("dets: %d %ld %f\n", boxes, classes, nms);
     float nms = .45;
     do_nms_sort(dets, boxes, classes, nms);
     double time3 = what_time_is_it_now();
-    printf("Predicted in %f seconds.\n", time3 - time2);
+    //printf("Predicted in %f seconds.\n", time3 - time2);
 
     detections->size = boxes;
     detections->begin = (dn_detection_t *) dets;
