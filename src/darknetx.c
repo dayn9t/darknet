@@ -5,56 +5,6 @@
 #include <stdlib.h>
 #include <assert.h>
 
-
-/*
-    struct image
-    @data    按照RGB顺序排列的planner数据
-
-*/
-
-#if 0
-/****************************** Image ******************************/
-
-cx_status_t dn_image_load(dn_image_t **_image, cx_path_t image_file)
-{
-    image im = load_image_color(image_file, 0, 0);   //DN缺陷
-    *_image = cx_clone(im);
-    return cx_ok;
-}
-
-
-cx_status_t dn_image_letterbox(dn_image_t **_image, dn_image_t *src, cx_size_t size)
-{
-    image im = letterbox_image(*(image *) src, size.width, size.height);
-    *_image = cx_clone(im);
-    return cx_ok;
-}
-
-
-cx_status_t dn_image_destroy(dn_image_t *_image)
-{
-    free_image(*(image *) _image);
-}
-
-
-cx_status_t dn_image_size(const dn_image_t *_image, cx_size_t *size)
-{
-    image *me = (image *) _image;
-    size->width = me->w;
-    size->height = me->h;
-    return cx_ok;
-}
-
-
-cx_status_t dn_image_data(dn_image_t *_image, float **data)
-{
-    image *me = (image *) _image;
-    *data = me->data;
-    return cx_ok;
-}
-#endif
-
-
 /****************************** Network ******************************/
 
 cx_status_t dn_network_classes(const dn_network_t *net, size_t *classes)

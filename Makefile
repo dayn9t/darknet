@@ -65,7 +65,7 @@ OBJ+=convolutional_kernels.o deconvolutional_kernels.o activation_kernels.o im2c
 endif
 CFLAGS+= -Werror-implicit-function-declaration
 OBJ+=darknetx.o
-LDFLAGS+= -lcxtom
+LDFLAGS+= -lcxtom -ljemalloc
 
 EXECOBJ = $(addprefix $(OBJDIR), $(EXECOBJA))
 OBJS = $(addprefix $(OBJDIR), $(OBJ))
