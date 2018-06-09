@@ -7,6 +7,11 @@ extern "C" {
 #endif
 
 
+/****************************** ErrorCode ******************************/
+
+#define DN_SIZE_MISMATCH 1  ///<尺寸不匹配
+
+
 /****************************** Network ******************************/
 
 ///网络对象
@@ -54,6 +59,7 @@ typedef struct dn_detector {
     dn_network_t *net;
     float thresh;
     float hier_thresh;
+    double time;
 } dn_detector_t;
 
 
@@ -75,7 +81,7 @@ cx_status_t dn_detector_destroy(dn_detector_t *detector);
  * @param detections    检测结果数组，使用后要用dn_detections_clear释放元素（DN设计缺陷）
  * @see dn_detections_clear
  */
-cx_status_t dn_detector_detect(dn_detector_t *detector, cx_imagef_t *image, dn_detections_t *detections);
+cx_status_t dn_detector_detect(dn_detector_t *detector, const cx_imagef_t *image, dn_detections_t *detections);
 
 
 

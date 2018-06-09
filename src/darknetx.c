@@ -92,35 +92,31 @@ static image to_image(cx_imagef_t* cx_im)
 }
 
 
-cx_status_t dn_detector_detect(dn_detector_t* detector, cx_imagef_t* _image, dn_detections_t *detections)
+cx_status_t dn_detector_detect(dn_detector_t* detector, const cx_imagef_t* _image, dn_detections_t *detections)
 {
     //TODO:dn_detections_t需要提取出来，但mask分配有点复杂
 
     image ori_image = to_image(_image);
-    cx_mat_shape_t in_shape;
-    dn_network_input_shape(detector->net, &in_shape);
     cx_size_t ori_size = _image->size;
 
-    image sized_image = letterbox_image(ori_image, in_shape.cols, in_shape.rows);
+    cx_mat_shape_t in_shape;
+    dn_network_input_shape(detector->net, &in_shape);
+    cx_size_t in_size = { in_shape.cols, in_shape.rows };
+
+    cx_ensure_or(cx_size_equal(ori_size, in_size), DN_SIZE_MISMATCH);
 
     network *net = (network *) detector->net;
     double time = what_time_is_it_now();    
-    network_predict(net, sized_image.data);
-    double time1 = what_time_is_it_now();
-    //printf("Predicted in %f seconds.\n", time1 - time);
-    int boxes = 0;
-    detection *dets = get_network_boxes(net, ori_size.width, ori_size.height, detector->thresh,
-                                        detector->hier_thresh, 0, 1, &boxes);
-    double time2 = what_time_is_it_now();
-    //printf("Predicted in %f seconds.\n", time2 - time1);
+    network_predict(net, _image->data);
+    detector->time = what_time_is_it_now() - time;
 
+    int boxes = 0;
+    detection *dets = get_network_boxes(net, ori_size.width, ori_size.height,
+        detector->thresh, detector->hier_thresh, 0, 1, &boxes);
     size_t classes;
     dn_network_classes(detector->net, &classes);
-    //printf("dets: %d %ld %f\n", boxes, classes, nms);
     float nms = .45;
     do_nms_sort(dets, boxes, classes, nms);
-    double time3 = what_time_is_it_now();
-    //printf("Predicted in %f seconds.\n", time3 - time2);
 
     detections->size = boxes;
     detections->begin = (dn_detection_t *) dets;
